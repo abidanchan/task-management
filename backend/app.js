@@ -12,9 +12,9 @@ app.use("/api/v1", userAPI);
 app.use("/api/v2", taskAPI);
 
 //Localhost:3000/api/v1/signin
-app.use("/", (req, res) => {
+/* app.use("/", (req, res) => {
   res.send("Hello, World!");
-});
+}); */
 
 app.listen(3000, () => {
   console.log("Server is running on port 3000");

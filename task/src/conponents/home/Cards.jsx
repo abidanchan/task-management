@@ -4,29 +4,7 @@ import { MdDelete } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
 import { IoAddCircleSharp } from "react-icons/io5";
 
-function Cards({ home, setInputDiv }) {
-  const data = [
-    {
-      title: "The Best Coding ",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-      status: "In Complete",
-    },
-    {
-      title: "The Best Designing ",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-      status: "Complete",
-    },
-    {
-      title: "The Best Marketing ",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-      status: "In Complete",
-    },
-    {
-      title: "The Best Writing ",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-      status: "In Complete",
-    },
-  ];
+function Cards({ home, setInputDiv, data }) {
   return (
     <div className="grid grid-cols-3 gap-3 p-3">
       {data &&

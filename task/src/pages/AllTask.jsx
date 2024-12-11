@@ -1,10 +1,29 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Cards from "../conponents/home/Cards";
 import { IoAddCircleSharp } from "react-icons/io5";
 import InputData from "../conponents/home/InputData";
+import axios from "axios";
 
 function AllTask() {
   const [InputDiv, setInputDiv] = useState("hidden");
+  const [Data, setData] = useState();
+  const headers = {
+    id: localStorage.getItem("id"),
+    authorization: `Bearer ${localStorage.getItem("token")}`,
+  };
+
+  useEffect(() => {
+    const fetch = async () => {
+      const response = await axios.get(
+        "http://localhost:3000/api/v2/alltasks",
+
+        { headers }
+      );
+      setData(response.data.data);
+    };
+    fetch();
+  });
+
   return (
     <>
       <div>
@@ -13,7 +32,9 @@ function AllTask() {
             <IoAddCircleSharp className="text-4xl text-gray-400 hover:text-gray-100 transition-all duration-300" />
           </button>
         </div>
-        <Cards home={"true"} setInputDiv={setInputDiv} />
+        {Data && (
+          <Cards home={"true"} setInputDiv={setInputDiv} data={Data.tasks} />
+        )}
       </div>
       <InputData InputDiv={InputDiv} setInputDiv={setInputDiv} />
     </>

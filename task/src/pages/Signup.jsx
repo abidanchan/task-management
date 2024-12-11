@@ -1,10 +1,17 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useSelector } from "react-redux";
 
 function Signup() {
   const [data, setData] = useState({ username: "", email: "", password: "" });
   const navigate = useNavigate();
+
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+  if (isLoggedIn === true) {
+    navigate("/");
+  }
+
   const change = (e) => {
     const { name, value } = e.target;
     setData({ ...data, [name]: value });

@@ -7,16 +7,18 @@ import CompleteTask from "./pages/CompleteTask";
 import InCompleteTask from "./pages/InCompleteTask";
 import Signup from "./pages/Signup";
 import Signin from "./pages/Signin";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { authActions } from "./store/auth";
 
 function App() {
   const navigate = useNavigate();
-  const isLogin = useSelector((state) => state.auth.isLoggedIn);
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+  const dispatch = useDispatch();
   useEffect(() => {
-    if (!isLogin) {
-      navigate("/signin");
+    if (localStorage.getItem("id") && localStorage.getItem("token")) {
+      dispatch(authActions.login());
     } else {
-      navigate("/");
+      navigate("/signin");
     }
   }, []);
   return (

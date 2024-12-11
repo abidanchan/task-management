@@ -24,11 +24,11 @@ router.post("/newtask", authToken, async (req, res) => {
 router.get("/alltasks", authToken, async (req, res) => {
   try {
     const { _id: userId } = req.user;
-    const userTasks = await User.findById(userId).populate({
+    const userData = await User.findById(userId).populate({
       path: "tasks",
       options: { sort: { createdAt: -1 } },
     });
-    res.status(200).json({ data: userTasks.tasks });
+    res.status(200).json({ data: userData });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server Error" });
