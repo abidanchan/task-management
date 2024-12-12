@@ -1,9 +1,12 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { RxCross2 } from "react-icons/rx";
 
-function InputData({ InputDiv, setInputDiv }) {
+function InputData({ InputDiv, setInputDiv, UpdatedData, setUpdatedData }) {
   const [Data, setData] = useState({ title: "", description: "" });
+  useEffect(() => {
+    setData({ title: UpdatedData.title, description: UpdatedData.description });
+  }, [UpdatedData]);
   const headers = {
     id: localStorage.getItem("id"),
     authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -16,12 +19,27 @@ function InputData({ InputDiv, setInputDiv }) {
     if (Data.title === "" || Data.description === "") {
       alert("Please fill in all fields");
     } else {
-      const res = await axios.post(
-        "http://localhost:3000/api/v2/newtask",
+      await axios.post("http://localhost:3000/api/v2/newtask", Data, {
+        headers,
+      });
+      setData({ title: "", description: "" });
+      setInputDiv("hidden");
+    }
+  };
+  const UpdateTask = async () => {
+    if (Data.title === "" || Data.description === "") {
+      alert("Please fill in all fields");
+    } else {
+      await axios.put(
+        `http://localhost:3000/api/v2/updatetask/${UpdatedData.id}`,
         Data,
-        { headers }
+        {
+          headers,
+        }
       );
-      console.log(res);
+      setUpdatedData({ id: "", title: "", description: "" });
+      setData({ title: "", description: "" });
+      setInputDiv("hidden");
     }
   };
   return (
@@ -34,7 +52,14 @@ function InputData({ InputDiv, setInputDiv }) {
       >
         <div className="w-2/6 bg-gray-900 p-4 rounded">
           <div className="flex justify-end">
-            <button className="text-2xl" onClick={() => setInputDiv("hidden")}>
+            <button
+              className="text-2xl"
+              onClick={() => {
+                setInputDiv("hidden");
+                setData({ title: "", description: "" });
+                setUpdatedData({ id: "", title: "", description: "" });
+              }}
+            >
               <RxCross2 />
             </button>
           </div>
@@ -55,12 +80,22 @@ function InputData({ InputDiv, setInputDiv }) {
             value={Data.description}
             onChange={change}
           />
-          <button
-            className="w-full py-2 text-xl font-semibold bg-green-700 rounded text-white transition-all duration-300 hover:scale-95"
-            onClick={submitData}
-          >
-            Submit
-          </button>
+          {/* when add Title bar for input field then we use this logic there too show add and update title */}
+          {UpdatedData.id === "" ? (
+            <button
+              className="w-full py-2 text-xl font-semibold bg-green-700 rounded text-white transition-all duration-300 hover:scale-95"
+              onClick={submitData}
+            >
+              Submit
+            </button>
+          ) : (
+            <button
+              className="w-full py-2 text-xl font-semibold bg-green-700 rounded text-white transition-all duration-300 hover:scale-95"
+              onClick={UpdateTask}
+            >
+              Update
+            </button>
+          )}
         </div>
       </div>
     </>

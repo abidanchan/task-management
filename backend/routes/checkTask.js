@@ -7,7 +7,7 @@ const { authToken } = require("./auth");
 router.post("/newtask", authToken, async (req, res) => {
   try {
     const { title, description } = req.body;
-    const { _id: userId } = req.user; // Extracted from JWT token
+    const { id: userId } = req.user; // Extracted from JWT token
     const newTask = new Task({ title, description });
     const savedTask = await newTask.save();
     await User.findByIdAndUpdate(userId, { $push: { tasks: savedTask._id } });
@@ -23,7 +23,7 @@ router.post("/newtask", authToken, async (req, res) => {
 // Get all tasks for a user
 router.get("/alltasks", authToken, async (req, res) => {
   try {
-    const { _id: userId } = req.user;
+    const { id: userId } = req.user;
     const userData = await User.findById(userId).populate({
       path: "tasks",
       options: { sort: { createdAt: -1 } },
@@ -39,7 +39,7 @@ router.get("/alltasks", authToken, async (req, res) => {
 router.delete("/deletetask/:id", authToken, async (req, res) => {
   try {
     const { id: taskId } = req.params;
-    const { _id: userId } = req.user;
+    const { id: userId } = req.user;
     await Task.findByIdAndDelete(taskId);
     await User.findByIdAndUpdate(userId, { $pull: { tasks: taskId } });
     res.status(200).json({ message: "Task deleted successfully" });
@@ -89,7 +89,7 @@ router.put("/updatecompletetask/:id", authToken, async (req, res) => {
   try {
     const { id: taskId } = req.params;
     const task = await Task.findById(taskId);
-    task.completed = !task.completed;
+    task.complete = !task.complete;
     await task.save();
     res
       .status(200)
@@ -103,7 +103,7 @@ router.put("/updatecompletetask/:id", authToken, async (req, res) => {
 // Get important tasks
 router.get("/importanttasks", authToken, async (req, res) => {
   try {
-    const { _id: userId } = req.user;
+    const { id: userId } = req.user;
     const user = await User.findById(userId).populate({
       path: "tasks",
       match: { important: true },
@@ -119,7 +119,7 @@ router.get("/importanttasks", authToken, async (req, res) => {
 // Get completed tasks
 router.get("/completedtasks", authToken, async (req, res) => {
   try {
-    const { _id: userId } = req.user;
+    const { id: userId } = req.user;
     const user = await User.findById(userId).populate({
       path: "tasks",
       match: { complete: true },
@@ -135,7 +135,7 @@ router.get("/completedtasks", authToken, async (req, res) => {
 // Get incomplete tasks
 router.get("/incompletedtasks", authToken, async (req, res) => {
   try {
-    const { _id: userId } = req.user;
+    const { id: userId } = req.user;
     const user = await User.findById(userId).populate({
       path: "tasks",
       match: { complete: false },
